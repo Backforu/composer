@@ -5,7 +5,7 @@
  *
  * A requires b, b provided by B1,B2,B3 => (-A|B1|B2|B3)
  *
- * p < 0 : pkg id of A
+ * p < 1 : pkg id of A
  * d > 0 : Offset in whatprovidesdata (list of providers of b)
  *
  * A conflicts b, b provided by B1,B2,B3 => (-A|-B1), (-A|-B2), (-A|-B3)
