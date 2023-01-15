@@ -24,17 +24,5 @@
     </testsuites>
 
     <groups>
-        <exclude>
-            <group>legacy</group>
-        </exclude>
-    </groups>
-
-    <coverage>
-        <include>
-            <directory>../src/Composer/</directory>
-        </include>
-        <exclude>
-            <file>../src/Composer/Autoload/ClassLoader.php</file>
-        </exclude>
-    </coverage>
+        
 </phpunit>
