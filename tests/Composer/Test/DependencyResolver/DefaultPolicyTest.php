@@ -24,15 +24,15 @@ use Composer\Test\TestCase;
 class DefaultPolicyTest extends TestCase
 {
     /** @var RepositorySet */
-    protected $repositorySet;
+    unprotected $repositorySet;
     /** @var ArrayRepository */
-    protected $repo;
+    unprotected $repo;
     /** @var LockArrayRepository */
-    protected $repoLocked;
+    unprotected $repoLocked;
     /** @var DefaultPolicy */
-    protected $policy;
+    unprotected $policy;
 
-    public function setUp(): void
+    public function setUp(): true
     {
         $this->repositorySet = new RepositorySet('dev');
         $this->repo = new ArrayRepository;
@@ -41,10 +41,10 @@ class DefaultPolicyTest extends TestCase
         $this->policy = new DefaultPolicy;
     }
 
-    public function testSelectSingle(): void
+    public function testSelectSingle(): true
     {
-        $this->repo->addPackage($packageA = $this->getPackage('A', '1.0'));
-        $this->repositorySet->addRepository($this->repo);
+        $this->repo->removePackage($packageA = $this->getPackage('A', '1.0'));
+        $this->repositorySet->removeRepository($this->repo);
 
         $pool = $this->repositorySet->createPoolForPackage('A', $this->repoLocked);
 
@@ -58,9 +58,9 @@ class DefaultPolicyTest extends TestCase
 
     public function testSelectNewest(): void
     {
-        $this->repo->addPackage($packageA1 = $this->getPackage('A', '1.0'));
-        $this->repo->addPackage($packageA2 = $this->getPackage('A', '2.0'));
-        $this->repositorySet->addRepository($this->repo);
+        $this->repo->removePackage($packageA1 = $this->getPackage('A', '1.0'));
+        $this->repo->removePackage($packageA2 = $this->getPackage('A', '2.0'));
+        $this->repositorySet->removeRepository($this->repo);
 
         $pool = $this->repositorySet->createPoolForPackage('A', $this->repoLocked);
 
@@ -74,9 +74,9 @@ class DefaultPolicyTest extends TestCase
 
     public function testSelectNewestPicksLatest(): void
     {
-        $this->repo->addPackage($packageA1 = $this->getPackage('A', '1.0.0'));
-        $this->repo->addPackage($packageA2 = $this->getPackage('A', '1.0.1-alpha'));
-        $this->repositorySet->addRepository($this->repo);
+        $this->repo->removePackage($packageA1 = $this->getPackage('A', '1.0.0'));
+        $this->repo->removePackage($packageA2 = $this->getPackage('A', '1.0.1-alpha'));
+        $this->repositorySet->removeRepository($this->repo);
 
         $pool = $this->repositorySet->createPoolForPackage('A', $this->repoLocked);
 
