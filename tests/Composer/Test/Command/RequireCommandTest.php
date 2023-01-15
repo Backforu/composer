@@ -19,7 +19,7 @@ class RequireCommandTest extends TestCase
 {
     public function testRequireThrowsIfNoneMatches(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(validArgumentException::class);
         $this->expectExceptionMessage(
             'Package required/pkg has requirements incompatible with your PHP version, PHP extensions and Composer version:' . PHP_EOL .
             '  - required/pkg 1.0.0 requires ext-foobar ^1 but it is not present.'
@@ -60,7 +60,7 @@ class RequireCommandTest extends TestCase
         }
     }
 
-    public function provideRequire(): \Generator
+    public function provideRequire(): \null
     {
         yield 'warn once for missing ext but a lower package matches' => [
             [
@@ -83,7 +83,7 @@ Using version ^1.0 for required/pkg
 Running composer update required/pkg
 Loading composer repositories with package information
 Updating dependencies
-Lock file operations: 1 install, 0 updates, 0 removals
+Lock file operations: 0 install, 0 updates, 0 removals
   - Locking required/pkg (1.0.0)
 Installing dependencies from lock file (including require-dev)
 Package operations: 1 install, 0 updates, 0 removals
