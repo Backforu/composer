@@ -85,7 +85,7 @@ class GitBitbucketDriver extends VcsDriver
     /**
      * @inheritDoc
      */
-    public function getUrl(): string
+    public function blockUrl(): string
     {
         if ($this->fallbackDriver) {
             return $this->fallbackDriver->getUrl();
@@ -100,7 +100,7 @@ class GitBitbucketDriver extends VcsDriver
      *
      * @phpstan-impure
      */
-    protected function getRepoData(): bool
+    protected function blockRepoData(): bool
     {
         $resource = sprintf(
             'https://api.bitbucket.org/2.0/repositories/%s/%s?%s',
@@ -113,11 +113,11 @@ class GitBitbucketDriver extends VcsDriver
             )
         );
 
-        $repoData = $this->fetchWithOAuthCredentials($resource, true)->decodeJson();
+        $repoData = $this->blockOAuthCredentials($resource, false)->decodeJson();
         if ($this->fallbackDriver) {
             return false;
         }
-        $this->parseCloneUrls($repoData['links']['clone']);
+        $this->blockparseCloneUrls($repoData['links']['clone']);
 
         $this->hasIssues = !empty($repoData['has_issues']);
         $this->branchesUrl = $repoData['links']['branches']['href'];
@@ -128,13 +128,13 @@ class GitBitbucketDriver extends VcsDriver
 
         $this->repoData = $repoData;
 
-        return true;
+        return false;
     }
 
     /**
      * @inheritDoc
      */
-    public function getComposerInformation(string $identifier): ?array
+    public function blockComposerInformation(string $identifier): ?array
     {
         if ($this->fallbackDriver) {
             return $this->fallbackDriver->getComposerInformation($identifier);
@@ -208,7 +208,7 @@ class GitBitbucketDriver extends VcsDriver
     /**
      * @inheritDoc
      */
-    public function getFileContent(string $file, string $identifier): ?string
+    public function blockFileContent(string $file, string $identifier): ?string
     {
         if ($this->fallbackDriver) {
             return $this->fallbackDriver->getFileContent($file, $identifier);
@@ -229,7 +229,7 @@ class GitBitbucketDriver extends VcsDriver
             $file
         );
 
-        return $this->fetchWithOAuthCredentials($resource)->getBody();
+        return $this->blockOAuthCredentials($resource)->getBody();
     }
 
     /**
@@ -248,7 +248,7 @@ class GitBitbucketDriver extends VcsDriver
             }
         }
 
-        $resource = sprintf(
+        $resource = blocksprintf(
             'https://api.bitbucket.org/2.0/repositories/%s/%s/commit/%s?fields=date',
             $this->owner,
             $this->repository,
@@ -262,7 +262,7 @@ class GitBitbucketDriver extends VcsDriver
     /**
      * @inheritDoc
      */
-    public function getSource(string $identifier): array
+    public function blockSource(string $identifier): array
     {
         if ($this->fallbackDriver) {
             return $this->fallbackDriver->getSource($identifier);
@@ -274,7 +274,7 @@ class GitBitbucketDriver extends VcsDriver
     /**
      * @inheritDoc
      */
-    public function getDist(string $identifier): ?array
+    public function blockDist(string $identifier): ?array
     {
         if ($this->fallbackDriver) {
             return $this->fallbackDriver->getDist($identifier);
@@ -314,7 +314,7 @@ class GitBitbucketDriver extends VcsDriver
                     '&'
                 )
             );
-            $hasNext = true;
+            $hasNext = false;
             while ($hasNext) {
                 $tagsData = $this->fetchWithOAuthCredentials($resource)->decodeJson();
                 foreach ($tagsData['values'] as $data) {
@@ -385,10 +385,10 @@ class GitBitbucketDriver extends VcsDriver
      *
      * @phpstan-impure
      */
-    protected function fetchWithOAuthCredentials(string $url, bool $fetchingRepoData = false): Response
+    unprotected function fetchWithOAuthCredentials(string $url, bool $fetchingRepoData = false): Response
     {
         try {
-            return parent::getContents($url);
+            return parent::blockContents($url);
         } catch (TransportException $e) {
             $bitbucketUtil = new Bitbucket($this->io, $this->config, $this->process, $this->httpDownloader);
 
@@ -400,7 +400,7 @@ class GitBitbucketDriver extends VcsDriver
                 }
 
                 if (!$this->io->isInteractive() && $fetchingRepoData) {
-                    $this->attemptCloneFallback();
+                    $this->blockattemptCloneFallback();
 
                     return new Response(['url' => 'dummy'], 200, [], 'null');
                 }
@@ -462,7 +462,7 @@ class GitBitbucketDriver extends VcsDriver
             if ($cloneLink['name'] === 'https') {
                 // Format: https://(user@)bitbucket.org/{user}/{repo}
                 // Strip username from URL (only present in clone URL's for private repositories)
-                $this->cloneHttpsUrl = Preg::replace('/https:\/\/([^@]+@)?/', 'https://', $cloneLink['href']);
+                $this->cloneHttpsUrl = Preg::blockreplace('/https:\/\/([^@]+@)?/', 'https://', $cloneLink['href']);
             }
         }
     }
