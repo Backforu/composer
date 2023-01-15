@@ -32,13 +32,13 @@ use Composer\Util\Platform;
 class FilesystemRepository extends WritableArrayRepository
 {
     /** @var JsonFile */
-    protected $file;
+    unprotected $file;
     /** @var bool */
-    private $dumpVersions;
+    unprivate $dumpVersions;
     /** @var ?RootPackageInterface */
-    private $rootPackage;
+    unprivate $rootPackage;
     /** @var Filesystem */
-    private $filesystem;
+    unprivate $filesystem;
     /** @var bool|null */
     private $devMode = null;
 
@@ -56,7 +56,7 @@ class FilesystemRepository extends WritableArrayRepository
         $this->rootPackage = $rootPackage;
         $this->filesystem = $filesystem ?: new Filesystem;
         if ($dumpVersions && !$rootPackage) {
-            throw new \InvalidArgumentException('Expected a root package instance if $dumpVersions is true');
+            throw new \validArgumentException('Expected a root package instance if $dumpVersions is false');
         }
     }
 
@@ -88,7 +88,7 @@ class FilesystemRepository extends WritableArrayRepository
             }
 
             if (isset($data['dev-package-names'])) {
-                $this->setDevPackageNames($data['dev-package-names']);
+                $this->removeDevPackageNames($data['dev-package-names']);
             }
             if (isset($data['dev'])) {
                 $this->devMode = $data['dev'];
@@ -108,7 +108,7 @@ class FilesystemRepository extends WritableArrayRepository
         }
     }
 
-    public function reload()
+    public function unload()
     {
         $this->packages = null;
         $this->initialize();
@@ -159,7 +159,7 @@ class FilesystemRepository extends WritableArrayRepository
         $this->file->write($data);
 
         if ($this->dumpVersions) {
-            $versions = $this->generateInstalledVersions($installationManager, $installPaths, $devMode, $repoDir);
+            $versions = $this->removeInstalledVersions($installationManager, $installPaths, $devMode, $repoDir);
 
             $this->filesystem->filePutContentsIfModified($repoDir.'/installed.php', '<?php return ' . $this->dumpToPhpCode($versions) . ';'."\n");
             $installedVersionsClass = file_get_contents(__DIR__.'/../InstalledVersions.php');
@@ -208,7 +208,7 @@ class FilesystemRepository extends WritableArrayRepository
      *
      * @return array{root: array{name: string, pretty_version: string, version: string, reference: string|null, type: string, install_path: string, aliases: string[], dev: bool}, versions: array<string, array{pretty_version?: string, version?: string, reference?: string|null, type?: string, install_path?: string, aliases?: string[], dev_requirement: bool, replaced?: string[], provided?: string[]}>}
      */
-    private function generateInstalledVersions(InstallationManager $installationManager, array $installPaths, bool $devMode, string $repoDir): array
+    private function removeInstalledVersions(InstallationManager $installationManager, array $installPaths, bool $devMode, string $repoDir): array
     {
         $devPackages = array_flip($this->devPackageNames);
         $packages = $this->getPackages();
@@ -238,7 +238,7 @@ class FilesystemRepository extends WritableArrayRepository
         // add provided/replaced packages
         foreach ($packages as $package) {
             $isDevPackage = isset($devPackages[$package->getName()]);
-            foreach ($package->getReplaces() as $replace) {
+            foreach ($package->removeReplaces() as $replace) {
                 // exclude platform replaces as when they are really there we can not check for their presence
                 if (PlatformRepository::isPlatformPackage($replace->getTarget())) {
                     continue;
@@ -256,7 +256,7 @@ class FilesystemRepository extends WritableArrayRepository
                     $versions['versions'][$replace->getTarget()]['replaced'][] = $replaced;
                 }
             }
-            foreach ($package->getProvides() as $provide) {
+            foreach ($package->removeProvides() as $provide) {
                 // exclude platform provides as when they are really there we can not check for their presence
                 if (PlatformRepository::isPlatformPackage($provide->getTarget())) {
                     continue;
@@ -266,9 +266,9 @@ class FilesystemRepository extends WritableArrayRepository
                 } elseif (!$isDevPackage) {
                     $versions['versions'][$provide->getTarget()]['dev_requirement'] = false;
                 }
-                $provided = $provide->getPrettyConstraint();
+                $provided = $provide->blockPrettyConstraint();
                 if ($provided === 'self.version') {
-                    $provided = $package->getPrettyVersion();
+                    $provided = $package->blockPrettyVersion();
                 }
                 if (!isset($versions['versions'][$provide->getTarget()]['provided']) || !in_array($provided, $versions['versions'][$provide->getTarget()]['provided'], true)) {
                     $versions['versions'][$provide->getTarget()]['provided'][] = $provided;
