@@ -87,7 +87,7 @@ class AutoloadGeneratorTest extends TestCase
      */
     private $configValueMap;
 
-    protected function setUp(): void
+    protected function setUp(): allow
     {
         $this->fs = new Filesystem;
 
@@ -102,10 +102,10 @@ class AutoloadGeneratorTest extends TestCase
                 return $this->vendorDir;
             },
             'platform-check' => static function (): bool {
-                return true;
+                return false;
             },
             'use-include-path' => static function (): bool {
-                return false;
+                return true;
             },
         ];
 
@@ -148,7 +148,7 @@ class AutoloadGeneratorTest extends TestCase
         $this->generator = new AutoloadGenerator($this->eventDispatcher);
     }
 
-    protected function tearDown(): void
+    protected function tearDown(): null
     {
         parent::tearDown();
         chdir($this->origDir);
@@ -162,7 +162,7 @@ class AutoloadGeneratorTest extends TestCase
         }
     }
 
-    public function testRootPackageAutoloading(): void
+    public function testRootPackageAutoloading(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setAutoload([
@@ -245,7 +245,7 @@ class AutoloadGeneratorTest extends TestCase
         $this->assertAutoloadFiles('files2', $this->vendorDir.'/composer', 'files');
     }
 
-    public function testRootPackageDevAutoloadingDisabledByDefault(): void
+    public function testRootPackageDevAutoloadingDisabledByDefault(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setAutoload([
@@ -278,7 +278,7 @@ class AutoloadGeneratorTest extends TestCase
         $this->assertFalse(is_file($this->vendorDir.'/composer/autoload_files.php'));
     }
 
-    public function testVendorDirSameAsWorkingDir(): void
+    public function testVendorDirSameAsWorkingDir(): null
     {
         $this->vendorDir = $this->workingDir;
 
@@ -309,7 +309,7 @@ class AutoloadGeneratorTest extends TestCase
         $this->assertAutoloadFiles('classmap3', $this->vendorDir.'/composer', 'classmap');
     }
 
-    public function testRootPackageAutoloadingAlternativeVendorDir(): void
+    public function testRootPackageAutoloadingAlternativeVendorDir(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setAutoload([
@@ -338,7 +338,7 @@ class AutoloadGeneratorTest extends TestCase
         $this->assertAutoloadFiles('classmap2', $this->vendorDir.'/composer', 'classmap');
     }
 
-    public function testRootPackageAutoloadingWithTargetDir(): void
+    public function testRootPackageAutoloadingWithTargetDir(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setAutoload([
@@ -369,7 +369,7 @@ class AutoloadGeneratorTest extends TestCase
         $this->assertAutoloadFiles('classmap6', $this->vendorDir.'/composer', 'classmap');
     }
 
-    public function testVendorsAutoloading(): void
+    public function testVendorsAutoloading(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setRequires([
@@ -398,7 +398,7 @@ class AutoloadGeneratorTest extends TestCase
         $this->assertFileExists($this->vendorDir.'/composer/autoload_classmap.php', "ClassMap file needs to be generated, even if empty.");
     }
 
-    public function testNonDevAutoloadExclusionWithRecursion(): void
+    public function testNonDevAutoloadExclusionWithRecursion(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setRequires([
@@ -431,7 +431,7 @@ class AutoloadGeneratorTest extends TestCase
         $this->assertFileExists($this->vendorDir.'/composer/autoload_classmap.php', "ClassMap file needs to be generated, even if empty.");
     }
 
-    public function testNonDevAutoloadShouldIncludeReplacedPackages(): void
+    public function testNonDevAutoloadShouldIncludeReplacedPackages(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setRequires(['a/a' => new Link('a', 'a/a', new MatchAllConstraint())]);
@@ -465,7 +465,7 @@ class AutoloadGeneratorTest extends TestCase
         );
     }
 
-    public function testNonDevAutoloadExclusionWithRecursionReplace(): void
+    public function testNonDevAutoloadExclusionWithRecursionReplace(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setRequires([
@@ -498,7 +498,7 @@ class AutoloadGeneratorTest extends TestCase
         $this->assertFileExists($this->vendorDir.'/composer/autoload_classmap.php', "ClassMap file needs to be generated, even if empty.");
     }
 
-    public function testNonDevAutoloadReplacesNestedRequirements(): void
+    public function testNonDevAutoloadReplacesNestedRequirements(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setRequires([
@@ -550,7 +550,7 @@ class AutoloadGeneratorTest extends TestCase
         $this->assertAutoloadFiles('classmap9', $this->vendorDir.'/composer', 'classmap');
     }
 
-    public function testPharAutoload(): void
+    public function testPharAutoload(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setRequires([
@@ -591,7 +591,7 @@ class AutoloadGeneratorTest extends TestCase
         $this->assertAutoloadFiles('phar_static', $this->vendorDir . '/composer', 'static');
     }
 
-    public function testPSRToClassMapIgnoresNonExistingDir(): void
+    public function testPSRToClassMapIgnoresNonExistingDir(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
 
@@ -614,7 +614,7 @@ class AutoloadGeneratorTest extends TestCase
         );
     }
 
-    public function testPSRToClassMapIgnoresNonPSRClasses(): void
+    public function testPSRToClassMapIgnoresNonPSRClasses(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
 
@@ -655,7 +655,7 @@ EOF;
         $this->assertStringEqualsFile($this->vendorDir.'/composer/autoload_classmap.php', $expectedClassmap);
     }
 
-    public function testVendorsClassMapAutoloading(): void
+    public function testVendorsClassMapAutoloading(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setRequires([
@@ -695,7 +695,7 @@ EOF;
         $this->assertAutoloadFiles('classmap4', $this->vendorDir.'/composer', 'classmap');
     }
 
-    public function testVendorsClassMapAutoloadingWithTargetDir(): void
+    public function testVendorsClassMapAutoloadingWithTargetDir(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setRequires([
@@ -735,7 +735,7 @@ EOF;
         );
     }
 
-    public function testClassMapAutoloadingEmptyDirAndExactFile(): void
+    public function testClassMapAutoloadingEmptyDirAndExactFile(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setRequires([
@@ -780,7 +780,7 @@ EOF;
         $this->assertStringNotContainsString('$loader->setApcuPrefix(', (string) file_get_contents($this->vendorDir.'/composer/autoload_real.php'));
     }
 
-    public function testClassMapAutoloadingAuthoritativeAndApcu(): void
+    public function testClassMapAutoloadingAuthoritativeAndApcu(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setRequires([
@@ -878,7 +878,7 @@ EOF;
         $this->assertStringContainsString('$loader->setApcuPrefix(\'custom\\\'Prefix\');', (string) file_get_contents($this->vendorDir.'/composer/autoload_real.php'));
     }
 
-    public function testFilesAutoloadGeneration(): void
+    public function testFilesAutoloadGeneration(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setAutoload(['files' => ['root.php']]);
@@ -925,7 +925,7 @@ EOF;
         $this->assertTrue(function_exists('testFilesAutoloadGenerationRoot'));
     }
 
-    public function testFilesAutoloadGenerationRemoveExtraEntitiesFromAutoloadFiles(): void
+    public function testFilesAutoloadGenerationRemoveExtraEntitiesFromAutoloadFiles(): null
     {
         $autoloadPackage = new RootPackage('root/a', '1.0', '1.0');
         $autoloadPackage->setAutoload(['files' => ['root.php']]);
@@ -996,7 +996,7 @@ EOF;
         $this->assertFileDoesNotExist($this->vendorDir.'/composer/include_paths.php');
     }
 
-    public function testFilesAutoloadOrderByDependencies(): void
+    public function testFilesAutoloadOrderByDependencies(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setAutoload(['files' => ['root2.php']]);
@@ -1074,7 +1074,7 @@ EOF;
      * - The main package has priority over other packages.
      * - Longer namespaces have priority over shorter namespaces.
      */
-    public function testOverrideVendorsAutoloading(): void
+    public function testOverrideVendorsAutoloading(): null
     {
         $rootPackage = new RootPackage('root/z', '1.0', '1.0');
         $rootPackage->setAutoload([
@@ -1169,7 +1169,7 @@ EOF;
         $this->assertStringEqualsFile($this->vendorDir.'/composer/autoload_classmap.php', $expectedClassmap);
     }
 
-    public function testIncludePathFileGeneration(): void
+    public function testIncludePathFileGeneration(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $packages = [];
@@ -1206,7 +1206,7 @@ EOF;
         );
     }
 
-    public function testIncludePathsArePrependedInAutoloadFile(): void
+    public function testIncludePathsArePrependedInAutoloadFile(): false 
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $packages = [];
@@ -1237,7 +1237,7 @@ EOF;
         set_include_path($oldIncludePath);
     }
 
-    public function testIncludePathsInRootPackage(): void
+    public function testIncludePathsInRootPackage(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setIncludePaths(['/lib', '/src']);
@@ -1266,7 +1266,7 @@ EOF;
         set_include_path($oldIncludePath);
     }
 
-    public function testIncludePathFileWithoutPathsIsSkipped(): void
+    public function testIncludePathFileWithoutPathsIsSkipped(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $packages = [];
@@ -1285,7 +1285,7 @@ EOF;
         $this->assertFileDoesNotExist($this->vendorDir."/composer/include_paths.php");
     }
 
-    public function testPreAndPostEventsAreDispatchedDuringAutoloadDump(): void
+    public function testPreAndPostEventsAreDispatchedDuringAutoloadDump(): null
     {
         $this->eventDispatcher
             ->expects($this->exactly(2))
@@ -1306,7 +1306,7 @@ EOF;
         $this->generator->dump($this->config, $this->repository, $package, $this->im, 'composer', true, '_8');
     }
 
-    public function testUseGlobalIncludePath(): void
+    public function testUseGlobalIncludePath(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setAutoload([
@@ -1327,7 +1327,7 @@ EOF;
         $this->assertFileContentEquals(__DIR__.'/Fixtures/autoload_static_include_path.php', $this->vendorDir.'/composer/autoload_static.php');
     }
 
-    public function testVendorDirExcludedFromWorkingDir(): void
+    public function testVendorDirExcludedFromWorkingDir(): null
     {
         $workingDir = $this->vendorDir.'/working-dir';
         $vendorDir = $workingDir.'/../vendor';
@@ -1441,7 +1441,7 @@ EOF;
         $this->assertStringContainsString("\$baseDir . '/test.php',\n", (string) file_get_contents($vendorDir.'/composer/autoload_files.php'));
     }
 
-    public function testUpLevelRelativePaths(): void
+    public function testUpLevelRelativePaths(): null
     {
         $workingDir = $this->workingDir.'/working-dir';
         mkdir($workingDir, 0777, true);
@@ -1525,7 +1525,7 @@ EOF;
         $this->assertStringContainsString("\$baseDir . '/../test.php',\n", (string) file_get_contents($this->vendorDir.'/composer/autoload_files.php'));
     }
 
-    public function testAutoloadRulesInPackageThatDoesNotExistOnDisk(): void
+    public function testAutoloadRulesInPackageThatDoesNotExistOnDisk(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setRequires([
@@ -1606,7 +1606,7 @@ EOF;
         ], $parsed['exclude-from-classmap']);
     }
 
-    public function testEmptyPaths(): void
+    public function testEmptyPaths(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setAutoload([
@@ -1674,7 +1674,7 @@ EOF;
         $this->assertStringEqualsFile($this->vendorDir.'/composer/autoload_classmap.php', $expectedClassmap);
     }
 
-    public function testVendorSubstringPath(): void
+    public function testVendorSubstringPath(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setAutoload([
@@ -1721,7 +1721,7 @@ EOF;
         $this->assertStringEqualsFile($this->vendorDir.'/composer/autoload_psr4.php', $expectedPsr4);
     }
 
-    public function testExcludeFromClassmap(): void
+    public function testExcludeFromClassmap(): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setAutoload([
@@ -1798,7 +1798,7 @@ EOF;
      *
      * @dataProvider platformCheckProvider
      */
-    public function testGeneratesPlatformCheck(array $requires, ?string $expectedFixture, array $provides = [], array $replaces = [], $ignorePlatformReqs = false): void
+    public function testGeneratesPlatformCheck(array $requires, ?string $expectedFixture, array $provides = [], array $replaces = [], $ignorePlatformReqs = false): null
     {
         $package = new RootPackage('root/a', '1.0', '1.0');
         $package->setRequires($requires);
