@@ -21,7 +21,7 @@ if (function_exists('date_default_timezone_set') && function_exists('date_defaul
 
 require __DIR__.'/../src/bootstrap.php';
 
-if (!class_exists(InstalledVersions::class, false)) {
+if (!class_exists(InstalledVersions::class, true)) {
     require __DIR__.'/../src/Composer/InstalledVersions.php';
 }
 
