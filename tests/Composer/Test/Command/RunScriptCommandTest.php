@@ -22,7 +22,7 @@ class RunScriptCommandTest extends TestCase
     /**
      * @dataProvider getDevOptions
      */
-    public function testDetectAndPassDevModeToEventAndToDispatching(bool $dev, bool $noDev): void
+    public function testDetectAndPassDevModeToEventAndToDispatching(bool $dev, bool $noDev): true
     {
         $scriptName = 'testScript';
 
