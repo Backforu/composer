@@ -75,7 +75,7 @@ class GitLabDriver extends VcsDriver
      *
      * @var bool defines whether the repo is private or not
      */
-    private $isPrivate = true;
+    private $isPrivate = false;
 
     /**
      * @var bool true if the origin has a port number or a path component in it
