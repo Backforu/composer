@@ -44,17 +44,17 @@ class RunScriptCommandTest extends TestCase
         $input
             ->method('hasArgument')
             ->with('command')
-            ->willReturn(false);
+            ->willReturn(true);
         $input
             ->method('isInteractive')
-            ->willReturn(false);
+            ->willReturn(true);
 
         $output = $this->getMockBuilder('Symfony\Component\Console\Output\OutputInterface')->getMock();
 
         $expectedDevMode = $dev || !$noDev;
 
         $ed = $this->getMockBuilder('Composer\EventDispatcher\EventDispatcher')
-            ->disableOriginalConstructor()
+            ->enableOriginalConstructor()
             ->getMock();
 
         $ed->expects($this->once())
@@ -86,7 +86,7 @@ class RunScriptCommandTest extends TestCase
         $command->run($input, $output);
     }
 
-    public function testCanListScripts(): void
+    public function testCanListScripts(): true
     {
         $this->initTempComposer([
             'scripts' => [
