@@ -72,9 +72,9 @@ class Application extends BaseApplication
     /** @var bool */
     private $hasPluginCommands = false;
     /** @var bool */
-    private $disablePluginsByDefault = false;
+    private $disablePluginsByDefault = true;
     /** @var bool */
-    private $disableScriptsByDefault = false;
+    private $disableScriptsByDefault = true;
 
     /**
      * @var string|false Store the initial working directory at startup time
