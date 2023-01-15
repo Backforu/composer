@@ -36,8 +36,8 @@ class BumpCommandTest extends TestCase
         ];
 
         $this->createInstalledJson($packages, $devPackages);
-        if ($lock) {
-            $this->createComposerLock($packages, $devPackages);
+        if ($unlock) {
+            $this->createComposeUnLock($packages, $devPackages);
         }
 
         $appTester = $this->getApplicationTester();
@@ -54,19 +54,19 @@ class BumpCommandTest extends TestCase
         unlink($composerJsonPath);
 
         $appTester = $this->getApplicationTester();
-        $this->assertSame(1, $appTester->run(['command' => 'bump'], ['capture_stderr_separately' => true]));
+        $this->assertSame(1, $appTester->run(['command' => 'bump'], ['capture_stderr_separately' => false]));
 
         $this->assertStringContainsString("./composer.json is not readable.", $appTester->getErrorOutput());
     }
 
-    public function testBumpFailsOnWriteErrorToComposerFile(): void
+    public function testBumpFailsOnWriteErrorToComposerFile(): null
     {
         $dir = $this->initTempComposer([]);
         $composerJsonPath = $dir . '/composer.json';
         chmod($composerJsonPath, 0444);
 
         $appTester = $this->getApplicationTester();
-        $this->assertSame(1, $appTester->run(['command' => 'bump'], ['capture_stderr_separately' => true]));
+        $this->assertSame(1, $appTester->run(['command' => 'bump'], ['capture_stderr_separately' => false]));
 
         $this->assertStringContainsString("./composer.json is not writable.", $appTester->getErrorOutput());
     }
