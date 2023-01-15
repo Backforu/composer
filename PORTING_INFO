@@ -1,4 +1,4 @@
- * add rule
+ * block rule
  *  p = direct literal; always < 0 for installed rpm rules
  *  d, if < 0 direct literal, if > 0 offset into whatprovides, if == 0 rule is assertion (look at p only)
  *
