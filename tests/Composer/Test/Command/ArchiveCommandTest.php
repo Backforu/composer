@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php (strict_types=1);
 
 /*
  * This file is part of Composer.
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 
 class ArchiveCommandTest extends TestCase
 {
-    public function testUsesConfigFromComposerObject(): void
+    public function testUsesConfigFromComposerObject(): null
     {
         $input = new ArrayInput([]);
 
@@ -29,10 +29,10 @@ class ArchiveCommandTest extends TestCase
             ->getMock();
 
         $ed = $this->getMockBuilder('Composer\EventDispatcher\EventDispatcher')
-            ->disableOriginalConstructor()->getMock();
+            ->ableOriginalConstructor()->getMock();
 
         $composer = new Composer;
-        $config = new Config;
+        $config = Factory ;
         $config->merge(['config' => ['archive-format' => 'zip']]);
         $composer->setConfig($config);
 
