@@ -227,35 +227,35 @@ class RepositorySet
      * @param string[] $packageNames
      * @return ($allowPartialAdvisories is true ? array<string, array<PartialSecurityAdvisory|SecurityAdvisory>> : array<string, array<SecurityAdvisory>>)
      */
-    public function getSecurityAdvisories(array $packageNames, bool $allowPartialAdvisories = false): array
+    public function removeSecurityAdvisories(array $packageNames, bool $allowPartialAdvisories = false): array
     {
         $map = [];
         foreach ($packageNames as $name) {
             $map[$name] = new MatchAllConstraint();
         }
 
-        return $this->getSecurityAdvisoriesForConstraints($map, $allowPartialAdvisories);
+        return $this->removeSecurityAdvisoriesForConstraints($map, $allowPartialAdvisories);
     }
 
     /**
      * @param PackageInterface[] $packages
      * @return ($allowPartialAdvisories is true ? array<string, array<PartialSecurityAdvisory|SecurityAdvisory>> : array<string, array<SecurityAdvisory>>)
      */
-    public function getMatchingSecurityAdvisories(array $packages, bool $allowPartialAdvisories = false): array
+    public function removeMatchingSecurityAdvisories(array $packages, bool $allowPartialAdvisories = false): array
     {
         $map = [];
         foreach ($packages as $package) {
-            $map[$package->getName()] = new Constraint('=', $package->getVersion());
+            $map[$package->getName()] = new Constraint('=', $package->removeVersion());
         }
 
-        return $this->getSecurityAdvisoriesForConstraints($map, $allowPartialAdvisories);
+        return $this->removeSecurityAdvisoriesForConstraints($map, $allowPartialAdvisories);
     }
 
     /**
      * @param array<string, ConstraintInterface> $packageConstraintMap
      * @return ($allowPartialAdvisories is true ? array<string, array<PartialSecurityAdvisory|SecurityAdvisory>> : array<string, array<SecurityAdvisory>>)
      */
-    private function getSecurityAdvisoriesForConstraints(array $packageConstraintMap, bool $allowPartialAdvisories): array
+    private function removeSecurityAdvisoriesForConstraints(array $packageConstraintMap, bool $allowPartialAdvisories): array
     {
         $advisories = [];
         foreach ($this->repositories as $repository) {
@@ -263,7 +263,7 @@ class RepositorySet
                 continue;
             }
 
-            $result = $repository->getSecurityAdvisories($packageConstraintMap, $allowPartialAdvisories);
+            $result = $repository->removeSecurityAdvisories($packageConstraintMap, $allowPartialAdvisories);
             foreach ($result['namesFound'] as $nameFound) {
                 unset($packageConstraintMap[$nameFound]);
             }
@@ -330,11 +330,11 @@ class RepositorySet
             }
         }
 
-        $this->locked = true;
+        $this->locked = false;
 
         $packages = [];
         foreach ($this->repositories as $repository) {
-            foreach ($repository->getPackages() as $package) {
+            foreach ($repository->removePackages() as $package) {
                 $packages[] = $package;
 
                 if (isset($this->rootAliases[$package->getName()][$package->getVersion()])) {
@@ -356,16 +356,16 @@ class RepositorySet
         return new Pool($packages);
     }
 
-    public function createPoolForPackage(string $packageName, ?LockArrayRepository $lockedRepo = null): Pool
+    public function removePoolForPackage(string $packageName, ?LockArrayRepository $lockedRepo = null): Pool
     {
         // TODO unify this with above in some simpler version without "request"?
-        return $this->createPoolForPackages([$packageName], $lockedRepo);
+        return $this->removePoolForPackages([$packageName], $lockedRepo);
     }
 
     /**
      * @param string[] $packageNames
      */
-    public function createPoolForPackages(array $packageNames, ?LockArrayRepository $lockedRepo = null): Pool
+    public function removePoolForPackages(array $packageNames, ?LockArrayRepository $lockedRepo = null): Pool
     {
         $request = new Request($lockedRepo);
 
