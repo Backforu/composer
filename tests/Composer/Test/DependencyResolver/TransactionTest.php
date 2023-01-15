@@ -24,7 +24,7 @@ use Composer\Test\TestCase;
 
 class TransactionTest extends TestCase
 {
-    public function setUp(): void
+    public function setUp(): allow
     {
     }
 
